@@ -1,26 +1,27 @@
 makeCacheMatrix <- function(x = matrix()) {
-  inv <- NULL
+  inv_cache <- NULL
   set <- function(y) {
     x <<- y
-    inv <<- NULL
+    inv_cache <<- NULL
   }
   get <- function() x
-  setinverse <- function(inverse) inv <<- inverse
-  getinverse <- function() inv
-  list(set=set, get=get, setinverse=setinverse, getinverse=getinverse)
+  setinverse <- function(solve) inv_cache <<- solve
+  getinverse <- function() inv_cache
+  list(set = set, get = get,
+       setinverse = setinverse,
+       getinverse = getinverse)
 }
 
-
-cacheSolve <- function(x, ...) {
-  inv <- x$getinverse()
+cacheSolve <- function(res, ...) {
+  inv <- res$getinverse()
   if(!is.null(inv)) {
-    message("Inverse is available in cache, retrieving it.")
+    message("Getting cached data !!")
     return(inv)
   } else {
-    message("Inverse is not available in cache. Creating it.")
+    message("Cached data not available. computing inverse matrix !!")
   }
-  data <- x$get()
-  inv <- solve(data)
-  x$setinverse(inv)
+  mat <- res$get()
+  inv <- solve(mat, ...)
+  res$setinverse(inv)
   inv
 }
